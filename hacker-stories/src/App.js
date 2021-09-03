@@ -48,6 +48,10 @@ const List = () =>
   ));
 
 function App() {
+  const handleChange = event => {
+    console.log(event.target.value);
+  };
+
   return (
     <div>
       <h1>
@@ -55,7 +59,7 @@ function App() {
       </h1>
 
       <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
+      <input id="search" type="text" onChange={handleChange} />
 
       <hr />
 
