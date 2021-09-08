@@ -62,7 +62,7 @@ const Search = props => {
   const handleChange = event => {
     setSearchTerm(event.target.value);
 
-    // call callback function
+    // call callback handler
     props.onSearch(event);
   };
 
