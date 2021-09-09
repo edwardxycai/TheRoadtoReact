@@ -2,21 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 
-// function List() {
-//   return list.map(function(item) {
-//     return (
-//       <div key={item.objectID}>
-//         <span>
-//           <a href={item.url}>{item.title}</a>
-//         </span>
-//         <span>{item.author}</span>
-//         <span>{item.num_comments}</span>
-//         <span>{item.points}</span>
-//       </div>
-//     );
-//   });
-// };
-
 function App() {
   const stories = [
     {
@@ -37,9 +22,15 @@ function App() {
     },
   ];
 
+  const [searchTerm, setSearchTerm] = React.useState('');
+
   const handleSearch = event => {
     console.log(event.target.value);
   }
+
+  const searchedStories = stories.filter(function(story) {
+    return story.title.includes(searchTerm);
+  });
 
   return (
     <div>
@@ -47,47 +38,39 @@ function App() {
         My Hacker Stories
       </h1>
 
-      <Search onSearch={handleSearch}/>
+      <Search search={searchTerm} onSearch={handleSearch}/>
 
       <hr />
 
-      <List list={stories} />
+      <List list={searchedStories} />
     </div>
   );
 }
 
-const Search = props => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+const Search = ({search, onSearch}) => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input
+      id="search"
+      type="text"
+      value={search}
+      onChange={onSearch}
+    />
+  </div>
+)
 
-  const handleChange = event => {
-    setSearchTerm(event.target.value);
+const List = ({list}) =>
+  list.map(item => <Item key={item.objectID} {...item} />);
 
-    // call callback handler
-    props.onSearch(event);
-  };
-
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={handleChange} />
-
-      <p>
-        Searching for <strong>{searchTerm}</strong>.
-      </p>
-    </div>
-  )
-}
-
-const List = props =>
-  props.list.map(item => (
-    <div key={item.objectID}>
-      <span>
-        <a href={item.url}>{item.title}</a>
-      </span>
-      <span>{item.author}</span>
-      <span>{item.num_comments}</span>
-      <span>{item.points}</span>
-    </div>
-  ));
+const Item = ({ title, url, author, num_comments, points }) => (
+  <div>
+    <span>
+      <a href={url}>{title}</a>
+    </span>
+    <span>{author}</span>
+    <span>{num_comments}</span>
+    <span>{points}</span>
+  </div>
+);
 
 export default App;
