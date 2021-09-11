@@ -2,6 +2,18 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  )
+
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
 function App() {
   const stories = [
     {
@@ -21,18 +33,6 @@ function App() {
       objectID: 1
     },
   ];
-
-  const useSemiPersistentState = (key, initialState) => {
-    const [value, setValue] = React.useState(
-      localStorage.getItem(key) || initialState;
-    )
-
-    React.useEffect(() => {
-      localStorage.setItem(key, value);
-    }, [value, key]);
-
-    return(value, setValue);
-  };
 
 const [searchTerm, setSearchTerm] = useSemiPersistentState(
   'search',
