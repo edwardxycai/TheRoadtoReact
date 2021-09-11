@@ -22,11 +22,26 @@ function App() {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const useSemiPersistentState = (key, initialState) => {
+    const [value, setValue] = React.useState(
+      localStorage.getItem(key) || initialState;
+    )
+
+    React.useEffect(() => {
+      localStorage.setItem(key, value);
+    }, [value, key]);
+
+    return(value, setValue);
+  };
+
+const [searchTerm, setSearchTerm] = useSemiPersistentState(
+  'search',
+  'React'
+);
 
   const handleSearch = event => {
     console.log(event.target.value);
-  }
+  };
 
   const searchedStories = stories.filter(function(story) {
     return story.title.includes(searchTerm);
@@ -45,7 +60,7 @@ function App() {
       <List list={searchedStories} />
     </div>
   );
-}
+};
 
 const Search = ({search, onSearch}) => (
   <div>
@@ -57,7 +72,7 @@ const Search = ({search, onSearch}) => (
       onChange={onSearch}
     />
   </div>
-)
+);
 
 const List = ({list}) =>
   list.map(item => <Item key={item.objectID} {...item} />);
