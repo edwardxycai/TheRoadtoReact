@@ -33,14 +33,13 @@ const useSemiPersistentState = (key, initialState) => {
   return [value, setValue];
 };
 
-const getAsyncStories = () => {
+const getAsyncStories = () => 
   new Promise(resolve => 
     setTimeout(
       () => resolve({ data: { stories: initialStories } }),
       2000
     )
-  )
-};
+  );
 
 function App() {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
@@ -49,13 +48,15 @@ function App() {
   );
 
   const [stories, setStories] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    getAsyncStories().then(
-      result => {
-        setStories(result.data.stories);
-      }
-    )
+    setIsLoading(true);
+
+    getAsyncStories().then(result => {
+      setStories(result.data.stories);
+      setIsLoading(false);
+    });
   }, []);
 
   const handleRemoveStory = (item) => {
@@ -67,7 +68,7 @@ function App() {
   }
 
   const handleSearch = event => {
-    console.log(event.target.value);
+    setSearchTerm(event.target.value);
   };
 
   const searchedStories = stories.filter(function(story) {
@@ -89,7 +90,14 @@ function App() {
 
       <hr />
 
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <List
+          list={searchedStories}
+          onRemoveItem={handleRemoveStory}
+        />
+      )}
     </div>
   );
 };
