@@ -118,7 +118,7 @@ const List = ({ list, onRemoveItem }) =>
     />
 );
 
-// const Item = ({ item, onRemoveItem }) => {
+const Item = ({ item, onRemoveItem }) => {
 //   const handleRemoveItem = () => {
 //     onRemoveItem(item);
 //   }
