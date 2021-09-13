@@ -56,7 +56,7 @@ function App() {
     'React'
   );
 
-  const [stories, setStories] = React.useState([]);
+  // const [stories, setStories] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
