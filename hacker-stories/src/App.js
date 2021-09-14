@@ -53,7 +53,6 @@ const storiesReducer = (state, action) => {
         ...state,
         isLoading: false,
         isError: true,
-        data: action.payload
       };
     case 'REMOVE_STORIES':
       return {
@@ -67,18 +66,23 @@ const storiesReducer = (state, action) => {
   }
 };
 
-const getAsyncStories = () => 
-  new Promise(resolve => 
-    setTimeout(
-      () => resolve({ data: { stories: initialStories } }),
-      2000
-    )
-  );
+// const getAsyncStories = () => 
+//   new Promise(resolve => 
+//     setTimeout(
+//       () => resolve({ data: { stories: initialStories } }),
+//       2000
+//     )
+//   );
+
+// const getAsyncStories = () =>
+//   new Promise((resolve, reject) => setTimeout(reject, 2000));
+
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
 function App() {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
     'search',
-    'React'
+    ''
   );
 
   // const [stories, setStories] = React.useState([]);
@@ -89,21 +93,25 @@ function App() {
   );
 
   React.useEffect(() => {
-    // setIsLoading(true);
-    dispatchStories({ type: 'STORIES_FETCH_INIT'});
+    if (!searchTerm) return;
 
-    getAsyncStories().then(result => {
+    // setIsLoading(true);
+    dispatchStories({ type: 'STORIES_FETCH_INIT' });
+
+    fetch(`${API_ENDPOINT}${searchTerm}`)
+      .then(response => response.json())
+      .then(result => {
       // setStories(result.data.stories);
-      dispatchStories({
-        type: 'STORIES_FETCH_SUCCESS',
-        payload: result.data.stories
-      });
+        dispatchStories({
+          type: 'STORIES_FETCH_SUCCESS',
+          payload: result.hits
+        });
       // setIsLoading(false);
-    })
-    .catch(() => 
-      dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
-    );
-  }, []);
+      })
+      .catch(() =>
+        dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+      );
+  }, [searchTerm]);
 
   const handleRemoveStory = (item) => {
     // const newStories = stories.filter(
@@ -121,9 +129,9 @@ function App() {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.data.filter(story =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const searchedStories = stories.data.filter(story =>
+  //   story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <div>
@@ -142,14 +150,14 @@ function App() {
 
       {stories.isError && <p>Something went wrong ...</p>}
 
-      {isLoading ? (
+      {stories.isLoading ? (
         <p>Loading...</p>
       ) : (
-        <List
-          list={searchedStories}
-          onRemoveItem={handleRemoveStory}
-        />
-      )}
+          <List
+            list={stories.data}
+            onRemoveItem={handleRemoveStory}
+          />
+        )}
     </div>
   );
 };
@@ -193,12 +201,12 @@ const List = ({ list, onRemoveItem }) =>
       item={item}
       onRemoveItem={onRemoveItem}
     />
-);
+  );
 
 const Item = ({ item, onRemoveItem }) => {
-//   const handleRemoveItem = () => {
-//     onRemoveItem(item);
-//   }
+  //   const handleRemoveItem = () => {
+  //     onRemoveItem(item);
+  //   }
 
   return (
     <div>
