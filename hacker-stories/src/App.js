@@ -98,7 +98,7 @@ function App() {
         type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.stories
       });
-      setIsLoading(false);
+      // setIsLoading(false);
     })
     .catch(() => 
       dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
@@ -121,9 +121,9 @@ function App() {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.filter(function(story) {
-    return story.title.includes(searchTerm);
-  });
+  const searchedStories = stories.data.filter(story =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -139,6 +139,8 @@ function App() {
       </InputWithLabel>
 
       <hr />
+
+      {stories.isError && <p>Something went wrong ...</p>}
 
       {isLoading ? (
         <p>Loading...</p>
