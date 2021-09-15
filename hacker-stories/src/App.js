@@ -82,11 +82,24 @@ const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 function App() {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
     'search',
-    ''
+    'React'
   );
 
   // const [stories, setStories] = React.useState([]);
   // const [isLoading, setIsLoading] = React.useState(false);
+
+  const [url, setUrl] = React.useState(
+    `${API_ENDPOINT}${searchTerm}`
+  );
+
+  const handleSearchInput = event => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
+  };
+
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
     { data: [], isLoading: false, isError: false }
@@ -98,7 +111,7 @@ function App() {
     // setIsLoading(true);
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(`${API_ENDPOINT}${searchTerm}`)
+    fetch(url)
       .then(response => response.json())
       .then(result => {
       // setStories(result.data.stories);
@@ -111,7 +124,7 @@ function App() {
       .catch(() =>
         dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
       );
-  }, [searchTerm]);
+  }, [url]);
 
   React.useEffect(() => {
     handleFetchStories();
@@ -129,10 +142,6 @@ function App() {
     });
   }
 
-  const handleSearch = event => {
-    setSearchTerm(event.target.value);
-  };
-
   // const searchedStories = stories.data.filter(story =>
   //   story.title.toLowerCase().includes(searchTerm.toLowerCase())
   // );
@@ -145,10 +154,18 @@ function App() {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
+
+      <button
+        type="button"
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+      >
+        Submit
+      </button>
 
       <hr />
 
