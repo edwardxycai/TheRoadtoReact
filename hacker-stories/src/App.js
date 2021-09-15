@@ -92,7 +92,7 @@ function App() {
     { data: [], isLoading: false, isError: false }
   );
 
-  React.useEffect(() => {
+  const handleFetchStories = React.useCallback(() => {
     if (!searchTerm) return;
 
     // setIsLoading(true);
@@ -112,6 +112,10 @@ function App() {
         dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
       );
   }, [searchTerm]);
+
+  React.useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
 
   const handleRemoveStory = (item) => {
     // const newStories = stories.filter(
