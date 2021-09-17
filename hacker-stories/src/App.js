@@ -159,7 +159,7 @@ function App() {
     onSearchInput,
     onSearchSubmit
   }) => (
-    <form onSubmit={onSearchSubmit}>
+    <form onSubmit={onSearchSubmit} className="search-form">
       <InputWithLabel
         id="search"
         value={searchTerm}
@@ -169,7 +169,11 @@ function App() {
         <strong>Search:</strong>
       </InputWithLabel>
 
-      <button type="button" disabled={!searchTerm}>
+      <button
+        type="button"
+        disabled={!searchTerm}
+        className="button button_large"
+      >
         Submit
       </button>
     </form>
@@ -218,7 +222,9 @@ const InputWithLabel = ({
 
   return (
     <>
-      <label htmlFor={id}>{children}</label>
+      <label htmlFor={id} className="label">
+        {children}
+      </label>
       &nbsp;
       <input
         ref={inputRef}
@@ -226,6 +232,7 @@ const InputWithLabel = ({
         type={type}
         value={value}
         onChange={onInputChange}
+        className="input"
       />
     </>
   )
